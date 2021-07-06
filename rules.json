@@ -1,0 +1,77 @@
+{
+    "rule1": {
+        "predicate": ["ALL"],
+        "fields": [{
+                "name": "from",
+                "value": [
+                    "contains",
+                    "17a6a71e8a30e051"
+                ]
+            },
+            {
+                "name": "to",
+                "value": [
+                    "contains",
+                    "msbrindha1006@gmail.com"
+                ]
+            },
+            {
+                "name": "subject",
+                "value": [
+                    "contains",
+                    "internship"
+                ]
+            },
+            {
+                "name": "date",
+                "value": [
+                    "contains",
+                    "Sat, 03 Jul 2021 03:38:07 +0000"
+                ]
+            }
+
+        ],
+        "actions": {
+            "addLabelIds": ["SENT"],
+            "removeLabelIds": []
+        }
+    },
+
+
+    "rule2": {
+        "predicate": ["ANY"],
+        "fields": [{
+                "name": "from",
+                "value": [
+                    "contains",
+                    "17a6a71e8a30e051"
+                ]
+            },
+            {
+                "name": "to",
+                "value": [
+                    "contains",
+                    "msbrindha1006@gmail.com"
+                ]
+            },
+            {
+                "name": "subject",
+                "value": [
+                    "contains",
+                    "internship"
+                ]
+            },
+            {
+                "name": "date",
+                "value": [
+                    "contains",
+                    "Sat, 03 Jul 2021 03:38:07 +0000"
+                ]
+            }
+        ],
+        "actions": {
+            "addLabelIds": ["RECEIVED"],
+            "removeLabelIds": []
+        }
+    }
+}
