@@ -117,7 +117,7 @@ if __name__ == '__main__':
     # get_email_list()
     # get_email_content('17a6a71e8a30e051') 
     # store()
-    mark_as_unread()
+    # mark_as_unread()
     # mark_as_read()
     # archive_message()
     
