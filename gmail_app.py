@@ -76,10 +76,7 @@ def mark_as_unread():
     for rule in rules["rule1"]["fields"]:
         print(rule['name'],rule['value'])
         service=get_gmail_service()
-        service.users().messages().modify(userId='me',id='17a6a71e8a30e051' , body={
-        'removeLabelIds': ['UNREAD']
-    }
-    )
+        service.users().messages().modify(userId='me',id='17a6a71e8a30e051' , body={'removeLabelIds': ['UNREAD']})
 
 
 def mark_as_read():
@@ -89,10 +86,7 @@ def mark_as_read():
     for rule in rules["rule1"]["fields"]:
         print(rule['name'],rule['value'])
         service=get_gmail_service()
-        service.users().messages().modify(userId='me',id ='17a6a71e8a30e051',body={
-        'removeLabelIds': ['UNREAD']
-    }
-    )
+        service.users().messages().modify(userId='me',id ='17a6a71e8a30e051',body={'removeLabelIds': ['UNREAD']})
 
 def archive_message():
     engine = db.create_engine('sqlite:///gmail.db', echo=True)
@@ -101,23 +95,71 @@ def archive_message():
     for rule in rules["rule1"]["fields"]:
         print(rule['name'],rule['value'])
         service=get_gmail_service()
-        service.users().messages().modify(userId='me',id ='17a6a71e8a30e051',body={
-        'removeLabelIds': ['INBOX']
+        service.users().messages().modify(userId='me',id ='17a6a71e8a30e051',body={'removeLabelIds': ['INBOX']})
+
+def add_labels():
+    SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                '../client.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    service = build('gmail', 'v1', credentials=creds)
+    results = service.users().labels().list(userId='me').execute()
+    labels = results.get('labels', [])
+
+    if not labels:
+        print('No labels found.')
+    else:
+        print('Labels:')
+        for label in labels:
+            print(label['name'])
+
+def create_labels():
+    service=get_gmail_service()
+    label = {
+        "labelListVisibility": "labelShow",
+        "messageListVisibility": "show",
+        "name": "SENT",
     }
-    )
+    results = service.users().labels().create(userId='me', body=label)
+    print(results)
 
+def starred():
+    engine = db.create_engine('sqlite:///gmail.db', echo=True)
+    conn = engine.connect()
+    rules = json.load(open('rules.json'))
+    for rule in rules["rule1"]["fields"]:
+        print(rule['name'],rule['value'])
+        service=get_gmail_service()
+        service.users().messages().modify(userId='me',id ='17a6a71e8a30e051',body={'removeLabelIds': ['STARRED']})
 
-
-
+def move_message_to_inbox():
+    rules = json.load(open('rules.json'))
+    for rule in rules["rule1"]['fields']:
+        print(rule['name'], rule['value'])
+    service = get_gmail_service()
+    service.users().messages().modify(userId='me', id='17a6a71e8a30e051',body={'removeLabelIds': ['STARRED']})
 
 
 
 
 if __name__ == '__main__':
-    # get_email_list()
+    # get_email_list()    
     # get_email_content('17a6a71e8a30e051') 
     # store()
     # mark_as_unread()
     # mark_as_read()
-    # archive_message()
+    archive_message()
+    # add_labels()
+    # starred()
+    # move_message_to_inbox()
     
